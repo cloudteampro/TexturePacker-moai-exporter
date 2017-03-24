@@ -1,0 +1,91 @@
+<exporter version="1.0">
+    <!-- identifier of the exporter -->
+    <name>moai_generic</name>
+	
+    <!-- display name of the exporter for the combo box -->
+    <displayName>Moai generic</displayName>
+	
+    <!-- description of the exporter -->
+    <description>Moai generic exporter</description>
+
+    <!-- exporter version -->
+    <version>1.0</version>
+	
+    <files>
+        <file>
+            <!-- name of this file variable -->
+            <name>luaFile</name>
+
+            <!-- human readable name (for GUI) -->
+            <displayName>Data file</displayName>
+
+            <!-- file extension for the file -->
+            <fileExtension>lua</fileExtension>
+
+            <!-- description what the file contains, used in tooltips in the GUI -->
+            <description>Lua data</description>
+
+            <!-- name of the template file -->
+            <template>data.lua</template>
+        </file>
+    </files>
+
+    <properties>
+        <!--
+            Unfortunately, I failed to find a way to pass string property as a number to .qs filter.
+            Content scale is derived from commonDivisorX.
+        -->
+        <property>
+            <name>moaiContentScaleSwitch</name>
+            <type>bool</type>
+            <displayName>Use content scale</displayName>
+            <toolTip>Convert sprite coordinates to points (from pixels). Scale factor is equals to common divisor X setting.</toolTip>
+        </property>
+<!--         <property>
+            <name>moaiContentScale</name>
+            <type>string</type>
+            <displayName>Content scale</displayName>
+            <toolTip>Convertion between screen points and pixels. Set this to 4 if your textures are designed for iPad retina.</toolTip>
+            <default>4</default>
+        </property> -->
+    </properties>
+
+    <!-- target framework supports trimming -->
+    <supportsTrimming>true</supportsTrimming>
+
+    <!-- target framework supports rotated sprites -->
+    <supportsRotation>true</supportsRotation>
+
+    <!-- rotated sprites direction (cw/ccw) -->
+    <rotationDirection>cw</rotationDirection>
+
+    <!-- supports npot sizes -->
+    <supportsNPOT>true</supportsNPOT>
+
+    <!-- supports file name stripping (remove .png etc) -->
+    <supportsTrimSpriteNames>yes</supportsTrimSpriteNames>
+
+    <!-- supports texure subpath -->
+    <supportsTextureSubPath>yes</supportsTextureSubPath>
+
+    <!-- TODO: add these two -->
+    <supportsScale9>true</supportsScale9>
+    <supportsPolygonPacking>true</supportsPolygonPacking>
+
+    <supportsPivotPoint>true</supportsPivotPoint>
+
+    <!-- default values, applied when the exporter is activated in the UI or command line -->
+    <defaults>
+        <!-- this is currently only a subset of settings -->
+        <extrude>0</extrude>
+        <shapePadding>0</shapePadding>
+        <borderPadding>0</borderPadding>
+        <trimMode>Trim</trimMode>
+        <sizeConstraints>AnySize</sizeConstraints>
+        <commonDivisorX>4</commonDivisorX>
+        <commonDivisorY>4</commonDivisorY>
+    </defaults>
+
+</exporter>
+
+
