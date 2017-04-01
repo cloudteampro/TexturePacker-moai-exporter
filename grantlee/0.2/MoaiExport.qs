@@ -1,9 +1,14 @@
 
-var writeSprites = function(allSprites) {
+var writeSprites = function ( tp ) {
     var output = "{\n";
 
-    for ( var i = 0; i < allSprites.length; i++ ) {
-        var sp = writeSprite(allSprites[i]);
+    var width = tp.texture.size.width;
+    var height = tp.texture.size.height;
+
+    contentScale = contentScale * tp.variantParams.scale;
+
+    for ( var i = 0; i < tp.allSprites.length; i++ ) {
+        var sp = writeSprite ( tp.allSprites [ i ], width, height );
         output += sp + ",\n";
     }
     
@@ -11,19 +16,27 @@ var writeSprites = function(allSprites) {
     return output;
 }
 writeSprites.filterName = "writeSprites";
-Library.addFilter("writeSprites");
+Library.addFilter ( "writeSprites" );
 
 contentScale = 1.0;
 
-var setContentScale = function(scl) {
-    contentScale = scl;
+var setContentScale = function ( scl ) {
+    var s = scl.rawString ();
+    var num = parseInt(s);
+    contentScale = s;
     return "";
 }
 setContentScale.filterName = "setContentScale";
-Library.addFilter("setContentScale");
+Library.addFilter ( "setContentScale" );
+
+var getContentScale = function ( scl ) {
+    return '' + (contentScale * scl);
+}
+getContentScale.filterName = "getContentScale";
+Library.addFilter ( "getContentScale" );
 
 
-var writeSprite = function(sprite) {
+var writeSprite = function ( sprite, textureWidth, textureHeight ) {
 
     var rectTop = sprite.pivotPoint.y - sprite.sourceRect.y;
     var rectBot = rectTop - sprite.sourceRect.height;
@@ -35,7 +48,6 @@ var writeSprite = function(sprite) {
     var boundsLeft = -sprite.pivotPoint.x;
     var boundsRight = boundsLeft + sprite.untrimmedSize.width;
     
-    var output = "succ\n";
     var pad = "    ";
     var pad2 = pad + pad;
     var pad3 = pad2 + pad;
@@ -64,37 +76,114 @@ var writeSprite = function(sprite) {
         output += u0 + ", " + v0 + ", " + u1 + ", " + v0 + ", " + u1 + ", " + v1 + ", " + u0 + ", " + v1 + "},\n";
     }
 
-    // if ( sprite.scale9Enabled ) {
-    //     output += sprite.scale9Borders.x + ";";
-    //     output += sprite.frameRect.width - sprite.scale9Borders.x - sprite.scale9Borders.width + ";";
-    //     output += sprite.scale9Borders.y + ";";
-    //     output += sprite.frameRect.height - sprite.scale9Borders.y - sprite.scale9Borders.height + ";";
-    // }
+    if ( sprite.scale9Enabled ) {
+        output += pad3 + "stretch = {"
+        output += "x = " + sprite.scale9Borders.x + ", ";
+        output += "y = " + sprite.scale9Borders.y + ", ";
+        output += "w = " + sprite.scale9Borders.width + ", ";
+        output += "h = " + sprite.scale9Borders.height + "},\n";
+    }
+
+    if ( sprite.vertices.length > 0 ) {
+        output += PrintVertices ( sprite, textureWidth, textureHeight );
+    }
 
     output += pad2 + "}"
-
-    // if (sprite.vertices.length > 0) {
-    //     output += PrintVertices(sprite) + ";"
-    // }
 
     return output;
 }
 
-// var PrintVertices = function(sprite) {
-// 
-//     var height = sprite.frameRect.height
-//     var str = ''
-//     var vertices = sprite.vertices
-//     var sourceRect = sprite.sourceRect
-//     str += " " + vertices.length
-//     for (var i = 0; i < vertices.length; i++) {
-//         str += ";" + (vertices[i].x - sourceRect.x) +
-//                ";" + (height - vertices[i].y + sourceRect.y)
-//     }
-//     var triangleIndices = sprite.triangleIndices
-//     str += "; " + triangleIndices.length / 3;
-//     for (i = 0; i < triangleIndices.length; i++) {
-//         str += ";" + triangleIndices[i]
-//     }
-//     return str
-// };
+var PrintVertices = function ( sprite, textureWidth, textureHeight ) {
+    
+    var pad = "    ";
+    var pad2 = pad + pad;
+    var pad3 = pad2 + pad;
+
+    var height = sprite.frameRect.height;
+    var str =  pad3 + "vtx = {";
+    var vertices = sprite.vertices;
+    var verticesUV = sprite.verticesUV;
+    
+    for ( var i = 0; i < vertices.length; i++ ) {
+        str += ( vertices [ i ].x - sprite.pivotPoint.x ) + ", " + ( sprite.pivotPoint.y - vertices [ i ].y ) + ", ";
+    }
+    str += "},\n";
+
+    str += pad3 + "uvs = {";
+    for ( var i = 0; i < verticesUV.length; i++ ) {
+        str += ( verticesUV [ i ].x / textureWidth ) + ", " + ( verticesUV [ i ].y / textureHeight ) + ", ";
+    }
+    str += "},\n";
+
+    var triangleIndices = sprite.triangleIndices
+    str += pad3 + "idx = {";
+    for ( i = 0; i < triangleIndices.length; i++ ) {
+        str += triangleIndices [ i ] + ", ";
+    }
+    str += "},\n";
+    return str
+};
+
+
+
+var introspect = function(value, name, indent)
+{
+    indent = indent || "";
+    name = name || "";
+
+    if (value === null)
+    {
+        return indent+name+" = null";
+    }
+
+    var objType = typeof value;
+    var info = indent+name+" = ";
+
+    if (objType === "undefined")
+    {
+        return info+"undefined\n";
+    }
+    else if (objType === "object")
+    {
+        var propInfo = "";
+        var prop;
+        for (prop in value)
+        {
+            if(prop !== "objectName") // ignore objectName - it's currently empty
+            {
+                var p = introspect(value[prop], prop, indent+"    ");
+                if(p !== "")
+                {
+                    propInfo += p +"\n";
+                }
+            }
+        }
+        if(propInfo==="")
+        {
+            info += "{"+value+"}";
+        }
+        else
+        {
+            info += "{\n" + propInfo +indent+"}";
+        }
+    }
+    else if (objType === "function")
+    {
+        return "";
+    }
+    else {
+        info+=value;
+    }
+
+    return info;
+};
+
+// print some detail about object {{value|makeRelY}}
+var ObjectInfo = function(input)
+{
+    return introspect(input);
+};
+ObjectInfo.filterName = "objectInfo";
+ObjectInfo.isSafe = true;
+Library.addFilter("ObjectInfo");
+

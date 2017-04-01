@@ -4,10 +4,13 @@
 -- {{smartUpdateKey}}
 -- 
 {% load MoaiExport %}
-{% if exporterProperties.moaiContentScaleSwitch %} {{variantParams.commonDivisorX|setContentScale}} {% endif %}
+{% if exporterProperties.moaiContentScaleSwitch %} {{exporterProperties.moaiContentScale|setContentScale}} {% endif %}
 
 return {
 	version = 2.0,
     texture = "{{texture.fullName}}",
-    frames = {{allSprites|writeSprites}}
+    width = "{{texture.size.width}}",
+    height = "{{texture.size.height}}",
+    scale = {{variantParams.scale|getContentScale}},
+    frames = {{tp|writeSprites}}
 }

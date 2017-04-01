@@ -31,23 +31,20 @@
     </files>
 
     <properties>
-        <!--
-            Unfortunately, I failed to find a way to pass string property as a number to .qs filter.
-            Content scale is derived from commonDivisorX.
-        -->
         <property>
             <name>moaiContentScaleSwitch</name>
             <type>bool</type>
             <displayName>Use content scale</displayName>
             <toolTip>Convert sprite coordinates to points (from pixels). Scale factor is equals to common divisor X setting.</toolTip>
+            <default>true</default>
         </property>
-<!--         <property>
+        <property>
             <name>moaiContentScale</name>
             <type>string</type>
             <displayName>Content scale</displayName>
             <toolTip>Convertion between screen points and pixels. Set this to 4 if your textures are designed for iPad retina.</toolTip>
             <default>4</default>
-        </property> -->
+        </property>
     </properties>
 
     <!-- target framework supports trimming -->
