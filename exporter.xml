@@ -43,7 +43,7 @@
             <type>string</type>
             <displayName>Content scale</displayName>
             <toolTip>Convertion between screen points and pixels. Set this to 4 if your textures are designed for iPad retina.</toolTip>
-            <default>4</default>
+            <default>3</default>
         </property>
     </properties>
 
