@@ -78,10 +78,10 @@ var writeSprite = function ( sprite, textureWidth, textureHeight ) {
 
     if ( sprite.scale9Enabled ) {
         output += pad3 + "stretch = {"
-        output += "x = " + sprite.scale9Borders.x + ", ";
-        output += "y = " + sprite.scale9Borders.y + ", ";
-        output += "w = " + sprite.scale9Borders.width + ", ";
-        output += "h = " + sprite.scale9Borders.height + "},\n";
+        output += "x = " + s * sprite.scale9Borders.x + ", ";
+        output += "y = " + s * sprite.scale9Borders.y + ", ";
+        output += "w = " + s * sprite.scale9Borders.width + ", ";
+        output += "h = " + s * sprite.scale9Borders.height + "},\n";
     }
 
     if ( sprite.vertices.length > 0 ) {
